@@ -1,0 +1,28 @@
+version: '3'
+services:
+  db:
+    image: mysql:5.6
+    command: mysqld --character-set-server=utf8 --collation-server=utf8_general_ci
+    environment:
+      MYSQL_USER: root
+      MYSQL_ROOT_PASSWORD: "share-app-server-db"
+      MYSQL_PASSWORD: "share-app-server-db"
+      LANG: C.UTF-8
+    ports:
+      - "4316:3306" # ホストからゲストへポートフォワード
+    volumes:
+      - mysql_data:/var/lib/mysql # MysqlDBの永続化
+  web:
+    tty: true
+    stdin_open: true
+    build: .
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
+    volumes:
+      - .:/app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+volumes:
+  mysql_data:
+    driver: local
