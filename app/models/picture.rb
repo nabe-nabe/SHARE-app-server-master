@@ -1,4 +1,4 @@
 class Picture < ApplicationRecord
-  validates :image, presence: true
-  mount_uploader :image, ImageUploader
+  # has_many_attached :images
+  has_one_attached :image
 end
